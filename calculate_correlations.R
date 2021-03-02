@@ -51,7 +51,7 @@ calculate_cors_fast <- function(table_i, table_j = NULL, ...) {
     # - se: standard error of the correlation
     
     if (is.null(table_j)) {
-        cors <- cor(x = as.matrix(table_i[,-1]), ...)
+        cors <- cor(x = as.matrix(table_i[,-"Sample"]), ...)
         corMat_flat_i <- flattenCorrMatrix(cormat = cors)
         
     }else{
