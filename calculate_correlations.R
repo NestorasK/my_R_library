@@ -1,0 +1,62 @@
+library(data.table)
+cor2pvalue = function(r, n) {
+    
+    # Code adopted from 
+    # https://stackoverflow.com/questions/13112238/a-matrix-version-of-cor-test
+    
+    t <- (r*sqrt(n-2))/sqrt(1-r^2)
+    p <- 2*(1 - pt(abs(t),(n-2)))
+    # se <- sqrt((1-r*r)/(n-2))
+    out <- list(#r = r, n = n, 
+        t = t,
+        p = p
+        #se = se
+    )
+    return(out)
+}
+flattenCorrMatrix <- function(cormat) {
+    
+    # Code adopted from 
+    # https://rdrr.io/github/heuselm/mocode/src/R/flattenCorrMatrix.R
+    
+    ut <- upper.tri(cormat)
+    data.table(
+        row = rownames(cormat)[row(cormat)[ut]],
+        column = rownames(cormat)[col(cormat)[ut]],
+        cor  = (cormat)[ut]
+    )
+}
+calculate_cors_fast <- function(table_i, table_j = NULL, ...) {
+    
+    # Input #
+    # table_i: data.table, Column "Sample" is expected
+    # table_j: data.table, Column "Sample" is expected
+    # ... : arguments for cor() function
+    
+    # Output # 
+    # row: columns from table_i
+    # column: columns from table_j
+    # tstat: t-statistic as calculated from cor2pvalue
+    # pvalue: respective p.value 
+    
+    
+    if (is.null(table_j)) {
+        cors <- cor(x = as.matrix(table_i[,-1]), ...)
+        corMat_flat_i <- flattenCorrMatrix(cormat = cors)
+        
+    }else{
+        setkey(x = table_i, Sample)
+        setkey(x = table_j, Sample)
+        cors <- cor(x = as.matrix(table_i[,-1]), y = as.matrix(table_j[, -1]), ...)
+        corMat_flat_i <- melt.data.table(data = data.table(cors, keep.rownames = TRUE), id.vars = "rn", 
+                                         variable.name = "column", value.name = "cor")
+        colnames(corMat_flat_i)[1] <- "row"
+    }
+    
+    corMat_flat_i[, c("tstat", "pvalue") := cor2pvalue(r = cor, n = length(unique(table_i[, Sample])))]
+    
+    # Output
+    return(corMat_flat_i)
+    
+}
+
