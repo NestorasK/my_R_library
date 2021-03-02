@@ -1,9 +1,11 @@
 # Short description #
 # Correlations calculations using R
 
-# calculate_cors_fast()
-# - faster than what I have found in base R and some available packages such as Hmisc, psych, especially when it comes to calculating p.values. 
-# - it can handle two different tables.
+# Function: calculate_cors_fast()
+# - Outputs a flat data.table
+# - Calculates correlations, t-statistic, pvalues, standard error
+# - It is faster in calculating pvalues than what I have found in base R and some available packages such as Hmisc, psych.
+# - It can handle one or two different tables
 
 library(data.table)
 cor2pvalue = function(r, n) {
