@@ -1,5 +1,9 @@
+# Description #
+# Functions converting a vector of statistics to p.values.
+
+# SUGGESTION: use function - my.t2p
+
 library(data.table)
-# Statistics to pvalues
 # Citations: 
 # Pesarin, F. & Salmaso, L. Permutation tests for complex data: theory, applications, and software. (Wiley, 2010).
 t2p <- function(stats){    
@@ -28,8 +32,8 @@ my.t2p <- function(statsVec){
     return(p.vec)
 }
 
-# Code adopted from omicsNPC online package
-# Pvalues are never 0 nor 1
+# Code adopted from R package STATegra - function omicsNPC 
+# Similar to adove but p.values are never 0 nor 1.
 computePvaluesVect <- function(statsVect){        
     
     #how many values are present in the vector of statistics?
