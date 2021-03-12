@@ -34,7 +34,7 @@ FDR_calculation <- function(statistics){
     Vs <- (all_stat_rank[1:length(init_stats_rank)] - init_stats_rank) / num_perm
     
     # Calculate pi0
-    q <- median(perm_stats)
+    q <- median(x = perm_stats, na.rm = TRUE)
     pi0 <- (2*sum(init_stats <= q))/ length(init_stats)
     
     # FDRs
@@ -46,4 +46,3 @@ FDR_calculation <- function(statistics){
     # return object
     return(FDR)
 }
-
