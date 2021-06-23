@@ -57,6 +57,11 @@ calculate_cors_fast <- function(table_i, table_j = NULL, ...) {
     }else{
         setkey(x = table_i, Sample)
         setkey(x = table_j, Sample)
+        
+        if (!all(table_i[, Sample] == table_j[, Sample])) {
+            stop("Samples are not aligned!")
+        }
+        
         cors <- cor(x = as.matrix(table_i[,-"Sample"]), y = as.matrix(table_j[, -"Sample"]), ...)
         corMat_flat_i <- melt.data.table(data = data.table(cors, keep.rownames = TRUE), id.vars = "rn", 
                                          variable.name = "column", value.name = "cor")
